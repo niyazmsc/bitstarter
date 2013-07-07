@@ -29,7 +29,6 @@ var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
 var URL_DEFAULT = "http://whispering-lowlands-9854.herokuapp.com/";
 
-
 var assertFileExists = function(infile) {
     var instr = infile.toString();
     if(!fs.existsSync(instr)) {
@@ -38,18 +37,6 @@ var assertFileExists = function(infile) {
     }
     return instr;
 };
-
-var assertUrlExists = function(url) { 
-	var urlString = url.toString();
-	rest.get(urlString).on('complete', function(result, reponse) {
-		if (result instanceof Error) {
-			console.log("%s does not exist. Exiting.", urlString);
-			process.exit(1);
-		} else {
-			return urlString ;
-		}
-	});
-}
 
 var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
@@ -95,13 +82,13 @@ var clone = function(fn) {
 
 if(require.main == module) {
     program
-        .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
-        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists))	// , HTMLFILE_DEFAULT)
-        .option('-u, --url <url>', 'web URL')	// , clone(assertUrlExists)) // , URL_DEFAULT)
+        .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists))	//	, CHECKSFILE_DEFAULT)
+        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists))		//	, HTMLFILE_DEFAULT)
+        .option('-u, --url <url>', 'web URL')	// , none , URL_DEFAULT)
         .parse(process.argv);
 	
 	if(program.url) {
-		console.log("URL: " + program.url.toString());
+//		console.log("URL: " + program.url.toString());
 		
 		rest.get(program.url).on('complete', function(result) {
 			if (result instanceof Error) {
@@ -117,7 +104,7 @@ if(require.main == module) {
 		});
 	}
 	else if(program.file) {
-		console.log("file: " + program.file);
+//		console.log("file: " + program.file);
 		var checkJson = checkHtmlFile(program.file, program.checks);
 		var outJson = JSON.stringify(checkJson, null, 4);
 		console.log(outJson);
